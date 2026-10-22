@@ -64,7 +64,9 @@
   60% { transform: translate(1px, .5px); } 80% { transform: translate(-.5px, -.5px); } }
 
 /* Record */
-#vd-record { position:absolute; inset:2%; border-radius:50%; cursor:pointer;
+/* The disc wrapper carries the song-change slide so it never competes with the record's spin. */
+#vd-disc { position:absolute; inset:2%; }
+#vd-record { position:absolute; inset:0; border-radius:50%; cursor:pointer;
   background:
     radial-gradient(circle, transparent 0 33%, rgba(255,255,255,.035) 33.5%, transparent 34%),
     repeating-radial-gradient(circle, var(--vd-record) 0 1px, color-mix(in srgb, var(--vd-record), #fff 5%) 1px 3px),
@@ -80,7 +82,7 @@
   box-shadow: 0 0 0 3px rgba(0,0,0,.6); }
 #vd-label::after { content:""; position:absolute; left:50%; top:50%; width:7%; height:7%; transform:translate(-50%,-50%);
   border-radius:50%; background:#ccc; box-shadow: inset 0 1px 2px rgba(0,0,0,.6); }
-#vd-record.swap { animation: vd-swap .7s ease; }
+#vd-disc.swap { animation: vd-swap .7s ease; }
 @keyframes vd-swap { 0% { transform: translateX(0) rotate(0); opacity:1 } 45% { transform: translateX(-120%) rotate(-200deg); opacity:0 }
   55% { transform: translateX(120%) rotate(200deg); opacity:0 } 100% { transform: translateX(0) rotate(0); opacity:1 } }
 
@@ -172,7 +174,7 @@
 <div id="vd-bg"></div><div id="vd-shade"></div>
 <div id="vd-stage">
   <div id="vd-deck">
-    <div id="vd-platter"><div id="vd-record"><div id="vd-label"></div></div><div id="vd-sheen"></div></div>
+    <div id="vd-platter"><div id="vd-disc"><div id="vd-record"><div id="vd-label"></div></div></div><div id="vd-sheen"></div></div>
     <div id="vd-arm"><div class="rod"></div><div class="head"></div><div class="base"></div></div>
     <div id="vd-led"></div>
   </div>
@@ -193,7 +195,7 @@
 
     const $ = (id) => root.querySelector("#" + id);
     const el = {
-        bg: $("vd-bg"), record: $("vd-record"), label: $("vd-label"), arm: $("vd-arm"), led: $("vd-led"),
+        bg: $("vd-bg"), disc: $("vd-disc"), record: $("vd-record"), label: $("vd-label"), arm: $("vd-arm"), led: $("vd-led"),
         title: $("vd-title"), artist: $("vd-artist"), pos: $("vd-pos"), dur: $("vd-dur"),
         bar: $("vd-bar"), fill: $("vd-fill"), play: $("vd-play"),
         lyrics: $("vd-lyrics"), lyricsBody: $("vd-lyrics-body"), lyricsBtn: $("vd-lyrics-btn"),
@@ -370,9 +372,9 @@
         el.bg.style.backgroundImage = img ? `url("${img}")` : "none";
 
         if (lastUri && lastUri !== item.uri && root.classList.contains("open")) {
-            el.record.classList.remove("swap");
-            void el.record.offsetWidth;
-            el.record.classList.add("swap");
+            el.disc.classList.remove("swap");
+            void el.disc.offsetWidth;
+            el.disc.classList.add("swap");
             setTimeout(() => (el.label.style.backgroundImage = img ? `url("${img}")` : "none"), 330);
         } else {
             el.label.style.backgroundImage = img ? `url("${img}")` : "none";
@@ -521,11 +523,6 @@
         root.classList.remove("open");
         cancelAnimationFrame(raf);
     }
-
-    // The swap animation replaces the spin while it runs, so clear it afterwards or the record stops turning.
-    el.record.addEventListener("animationend", (e) => {
-        if (e.animationName === "vd-swap") el.record.classList.remove("swap");
-    });
 
     $("vd-close").onclick = close;
     el.record.onclick = togglePlay;
