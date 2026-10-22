@@ -522,6 +522,11 @@
         cancelAnimationFrame(raf);
     }
 
+    // The swap animation replaces the spin while it runs, so clear it afterwards or the record stops turning.
+    el.record.addEventListener("animationend", (e) => {
+        if (e.animationName === "vd-swap") el.record.classList.remove("swap");
+    });
+
     $("vd-close").onclick = close;
     el.record.onclick = togglePlay;
     el.play.onclick = togglePlay;
