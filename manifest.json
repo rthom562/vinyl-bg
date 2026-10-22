@@ -1,0 +1,9 @@
+{
+  "name": "Vinyl BG",
+  "description": "A full-window turntable for Spotify: spinning record with the album art as its label, a tonearm that follows the song, needle-drop scratch, synced lyrics and colour presets.",
+  "preview": "preview.png",
+  "main": "vinyl-bg.js",
+  "readme": "README.md",
+  "authors": [{ "name": "rthom562", "url": "https://github.com/rthom562" }],
+  "tags": ["vinyl", "player", "lyrics", "visual"]
+}
